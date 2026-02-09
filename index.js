@@ -25,6 +25,10 @@ export const shuffle = (array) => {
   return array;
 };
 
+export const makeArray = (length, mapper = (a, i) => i) => {
+  return Array.from({length}).map(mapper);
+};
+
 export const createNode = (type, className) => {
   const node = document.createElement(type);
   if(className) {
@@ -112,7 +116,7 @@ export class Storage {
   };
   fetch() {
 
-    return JSON.parse(localStorage.getItem(this.namespace)||"{}");
+    return JSON.parse(localStorage.getItem(this.namespace)||'{}');
 
   };
   clear() {
@@ -125,4 +129,26 @@ export class Storage {
     localStorage.setItem(this.namespace, JSON.stringify(obj));
 
   };
+};
+
+export class GUID {
+  constructor() {
+    
+    this.chars = [...this.uppercase, ...this.lowercase, ...this.numeric];
+
+  };
+  uppercase = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+  lowercase = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+  numeric = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+  segment() {
+    
+    return makeArray(4, (a, i) => getRandom(i > 0 ? this.chars : this.uppercase)).join('');
+
+  };
+  get() {
+    
+    return makeArray(this.segments, () => this.segment()).join('-');
+    
+  };
+  segments = 3;
 };
