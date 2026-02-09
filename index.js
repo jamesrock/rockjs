@@ -10,6 +10,8 @@ export const pluckRandom = (a) => a.splice(randomIndex(a), 1)[0];
 export const pluckFirst = (a) => a.splice(0, 1)[0];
 export const pluckLast = (a) => a.splice(a.length-1, 1)[0];
 export const getRandom = (a) => a[randomIndex(a)];
+export const getFirst = (a) => a[0];
+export const getLast = (a) => a[a.length-1];
 export const isLandscape = () => window.matchMedia('(orientation: landscape)').matches;
 export const isTiny = () => !window.matchMedia('(min-width: 450px)').matches;
 export const isDarkMode = () => window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -19,7 +21,7 @@ export const formatTime = (t) => `${pad(formatMinutes(t))}:${pad(formatSeconds(t
 export const formatNumber = (n) => formatter.format(n);
 export const formatCurrency = (n) => currencyFormatter.format(n);
 export const getDateString = () => new Date().toLocaleDateString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric'});
-export const isValidKey = (key, options) => (options.includes(key));
+export const isValidKey = (key, options) => options.includes(key);
 export const shuffle = (array) => {
   for(let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
