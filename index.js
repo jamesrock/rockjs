@@ -1,7 +1,8 @@
-const timeToMinutes = (time) => Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));
-const timeToSeconds = (time) => Math.floor((time % (1000 * 60)) / 1000);
+const formatMinutes = (time) => Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));
+const formatSeconds = (time) => Math.floor((time % (1000 * 60)) / 1000);
 const pad = (time) => time.toString().padStart(2, '0');
 const formatter = new Intl.NumberFormat('en-GB');
+const currencyFormatter = new Intl.NumberFormat('en-GB', {style: 'currency', currency: 'GBP'});
 
 export const random = (min, max) => (Math.floor(Math.random()*((max-min)+1))+min);
 export const randomIndex = (a) => random(0, a.length-1);
@@ -11,10 +12,11 @@ export const pluckLast = (a) => a.splice(a.length-1, 1)[0];
 export const getRandom = (a) => a[randomIndex(a)];
 export const isLandscape = () => window.matchMedia('(orientation: landscape)').matches;
 export const isTiny = () => !window.matchMedia('(min-width: 450px)').matches;
-export const timeToDisplay = (time) => `${pad(timeToMinutes(time))}:${pad(timeToSeconds(time))}`;
 export const makeEven = (value) => value % 2 === 1 ? value - 1 : value;
 export const limit = (value, max) => value > max ? max : value;
+export const formatTime = (t) => `${pad(formatMinutes(t))}:${pad(formatSeconds(t))}`;
 export const formatNumber = (n) => formatter.format(n);
+export const formatCurrency = (n) => currencyFormatter.format(n);
 export const shuffle = (array) => {
   for(let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -26,7 +28,7 @@ export const shuffle = (array) => {
 };
 
 export const makeArray = (length, mapper = (a, i) => i) => {
-  return Array.from({length}).map(mapper);
+  return Array.from({length}, mapper);
 };
 
 export const createNode = (type, className) => {
@@ -44,24 +46,24 @@ export const createButton = (label = '{label}', className) => {
 };
 
 export const createInput = (value = 0, type = 'number') => {
-  const input = document.createElement('input');
+  const input = createNode('input');
   input.type = type;
   input.value = value;
   return input;
 };
 
-export const createOutput = () => {
-  const textarea = document.createElement('textarea');
-  textarea.rows = 7;
+export const createOutput = (rows = 7) => {
+  const textarea = createNode('textarea');
+  textarea.rows = rows;
   return textarea;
 };
 
-export const createContainer = (className = '') => {
+export const createContainer = (className) => {
   return createNode('div', className);
 };
 
 export const createSelect = (options) => {
-  const node = document.createElement('select');
+  const node = createNode('select');
   options.forEach(([label, value]) => {
     const option = createOption(label, value);
     node.appendChild(option);
@@ -69,8 +71,8 @@ export const createSelect = (options) => {
   return node;
 };
 
-const createOption = (label = '', value = '') => {
-  const node = document.createElement('option');
+const createOption = (label = '{label}', value = 0) => {
+  const node = createNode('option');
   node.innerText = label;
   node.value = value;
   return node;
