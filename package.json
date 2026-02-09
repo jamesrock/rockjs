@@ -1,0 +1,12 @@
+{
+  "name": "@jamesrock/rockjs",
+  "version": "1.0.0",
+  "description": "utility bliss",
+  "license": "ISC",
+  "author": "James Rock",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
