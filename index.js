@@ -20,20 +20,18 @@ export const limit = (value, max) => value > max ? max : value;
 export const formatTime = (t) => `${pad(formatMinutes(t))}:${pad(formatSeconds(t))}`;
 export const formatNumber = (n) => formatter.format(n);
 export const formatCurrency = (n) => currencyFormatter.format(n);
-export const getDateString = () => new Date().toLocaleDateString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric'});
+export const getDateString = (type = 'short') => new Date().toLocaleDateString('en-GB', { dateStyle: type });
+export const getTimeString = (type = 'short') => new Date().toLocaleTimeString('en-GB', { timeStyle: type });
+export const getDateTimeString = (type = 'short') => `${getDateString(type)} ${getTimeString(type)}`;
 export const isValidKey = (key, options) => options.includes(key);
-export const shuffle = (array) => {
-  for(let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    const temp = array[i];
-    array[i] = array[j];
-    array[j] = temp;
-  };
-  return array;
-};
+export const makeArray = (length, mapper = (a, i) => i) => Array.from({length}, mapper);
 
-export const makeArray = (length, mapper = (a, i) => i) => {
-  return Array.from({length}, mapper);
+export const shuffle = (a) => {
+  for(let i = 0; i < a.length; i++) {
+    const b = Math.floor(Math.random() * a.length);
+    [a[i], a[b]] = [a[b], a[i]];
+  };
+  return a;
 };
 
 export const createNode = (type, className) => {
