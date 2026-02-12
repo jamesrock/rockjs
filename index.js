@@ -157,3 +157,24 @@ export class GUID {
   };
   segments = 3;
 };
+
+export class Scaler {
+  constructor(scale) {
+    this.scale = scale;
+  }
+  inflate(value) {
+		return value * this.scale;
+	};
+	deflate(value) {
+		return value / this.scale;
+	};
+};
+
+export class Rounder {
+  constructor(tolerance) {
+    this.tolerance = tolerance;
+  };
+  round(value) {
+		return Math.round(value / this.tolerance) * this.tolerance;
+	};
+};
