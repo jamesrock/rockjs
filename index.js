@@ -178,3 +178,58 @@ export class Rounder {
 		return Math.round(value / this.tolerance) * this.tolerance;
 	};
 };
+
+export class DisplayObject {
+  appendTo(to) {
+
+		to.appendChild(this.node);
+		return this;
+
+	};
+	addEventListener(event, handler, passive = true) {
+		
+		this.node.addEventListener(event, handler, {passive});
+		return this;
+		
+	};
+	dispatchEvent(event) {
+		
+		this.node.dispatchEvent(new Event(event));
+		return this;
+
+	};
+};
+
+export class GameBase extends DisplayObject {
+  constructor(name) {
+
+    super();
+    
+    this.node = createNode('div', name);
+		this.gameOverNode = createNode('div', 'game-over');
+		this.canvas = createNode('canvas', 'game-canvas');
+		this.ctx = this.canvas.getContext('2d');
+		this.storage = new Storage(`me.jamesrock.${name}`);
+    
+  };
+  showGameOverScreen() {
+
+		const best = this.storage.get('best') || 0;
+		this.storage.set('best', this.score > best ? this.score : best);
+		
+		this.gameOverNode.innerHTML = `\
+			<div class="game-over-body">\
+				<h1>Game over!</h1>\
+				<div>\
+					<p class="score">${formatNumber(this.score)}</p>\
+					<p class="best">Best: ${formatNumber(this.storage.get('best'))}</p>\
+				</div>\
+				<p class="continue">Tap to continue</p>\
+			</div>`;
+		this.gameOver = true;
+		this.gameOverNode.dataset.active = true;
+
+		return this;
+
+	};
+};
