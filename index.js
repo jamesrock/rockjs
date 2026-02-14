@@ -233,3 +233,82 @@ export class GameBase extends DisplayObject {
 
 	};
 };
+
+export class BrickMaker extends DisplayObject {
+	constructor(color, size = 4, type = 'digits') {
+
+		super();
+
+		this.color = color;
+		this.size = size;
+    this.type = type;
+
+		const node = this.node = createNode('div', 'brick-maker');
+		const bob = 30;
+		const gap = 1;
+		const bits = [];
+    const hexMap = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
+
+		const calculate = () => {
+      let total = null;
+      switch(this.type) {
+        case 'digits':
+          total = makeArray(size*size, () => 0);
+          bits.forEach((bit, i) => {
+            if(bit.dataset.active==='Y') {
+              total[i] = Number(bit.dataset.value);
+            };
+          });
+          this.value = JSON.stringify(total);
+        break;
+        case 'binary':
+          total = makeArray(size, () => 0);
+          makeArray(size).forEach((y) => {
+            bits.filter((bit) => bit.dataset.y == y).forEach((bit) => {
+              if(bit.dataset.active==='Y') {
+                total[y] += Number(bit.dataset.value);
+              };
+            });
+            total[y] = hexMap[total[y]];
+          });
+          this.value = `0x${total.join('')}`;
+        break;
+      };
+      this.dispatchEvent('result');
+		};
+
+		node.style.setProperty('--color', this.color);
+
+		node.style.width = node.style.height = `${bob*size + (gap*(size-1))}px`;
+		node.style.gap = `${gap}px`;
+
+		makeArray(size).forEach((y) => {
+			makeArray(size).forEach((x) => {
+
+				const bit = createNode('div', 'brick-maker-bit');
+				let active = false;
+				bit.style.width = bit.style.height = `${bob}px`;
+				bit.dataset.x = x;
+				bit.dataset.y = y;
+				bit.dataset.value = this.typeValues[this.type][x];
+				bit.dataset.active = 'N';
+				node.appendChild(bit);
+
+				bits.push(bit);
+
+				bit.addEventListener('click', () => {
+					active = !active;
+					bit.dataset.active = active ? 'Y' : 'N';
+					calculate();
+				});
+
+			});
+		});
+
+	};
+  typeValues = {
+    'digits': makeArray(16, () => 1),
+    'binary': [8, 4, 2, 1]
+  };
+  value = null;
+};
