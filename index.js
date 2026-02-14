@@ -74,11 +74,35 @@ export const createSelect = (options) => {
   return node;
 };
 
-const createOption = (label = '{label}', value = 0) => {
+export const createOption = (label = '{label}', value = 0) => {
   const node = createNode('option');
   node.innerText = label;
   node.value = value;
   return node;
+};
+
+export const makeBitArray = (size) => {
+  let bob = 2**size;
+  return makeArray(size, () => {
+    bob = bob/2;
+    return bob;
+  });
+};
+
+export const makeHexMap = (full = true) => {
+  const out = [];
+  const hexMap = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
+  if(full) {
+    makeArray(hexMap.length).forEach((x) => {
+      makeArray(hexMap.length).forEach((y) => {
+        out.push(`${hexMap[x]}${hexMap[y]}`);
+      });
+    });
+  }
+  else {
+    return hexMap;
+  };
+  return out;
 };
 
 export class Storage {
@@ -247,7 +271,11 @@ export class BrickMaker extends DisplayObject {
 		const bob = 30;
 		const gap = 1;
 		const bits = [];
-    const hexMap = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
+    const hexMap = size*size > 16 ? makeHexMap() : makeHexMap(false);
+    const typeValues = {
+      'digits': makeArray(size*size, () => 1),
+      'binary': makeBitArray(size)
+    };
 
 		const calculate = () => {
       let total = null;
@@ -290,7 +318,7 @@ export class BrickMaker extends DisplayObject {
 				bit.style.width = bit.style.height = `${bob}px`;
 				bit.dataset.x = x;
 				bit.dataset.y = y;
-				bit.dataset.value = this.typeValues[this.type][x];
+				bit.dataset.value = typeValues[this.type][x];
 				bit.dataset.active = 'N';
 				node.appendChild(bit);
 
@@ -306,9 +334,5 @@ export class BrickMaker extends DisplayObject {
 		});
 
 	};
-  typeValues = {
-    'digits': makeArray(16, () => 1),
-    'binary': [8, 4, 2, 1]
-  };
   value = null;
 };
