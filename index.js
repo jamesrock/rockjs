@@ -288,8 +288,8 @@ export class BrickMaker extends DisplayObject {
 
 		const node = this.node = createNode('div', 'brick-maker');
 		const bits = this.bits = [];
-    
-		node.style.setProperty('--color', this.color);
+
+    this.setColor(color);
 		node.style.width = node.style.height = `${scale*size + (gap*(size-1))}px`;
 		node.style.gap = `${gap}px`;
 
@@ -361,6 +361,23 @@ export class BrickMaker extends DisplayObject {
     });
     this.calculate();
 
+    return this;
+
+  };
+  clear() {
+
+    this.bits.forEach((bit) => {
+      bit.dataset.active = 'N';
+    });
+    this.calculate();
+
+    return this;
+
+  };
+  setColor(color) {
+    
+    this.color = color;
+    this.node.style.setProperty('--color', this.color);
     return this;
 
   };
