@@ -81,6 +81,12 @@ export const createOption = (label = '{label}', value = 0) => {
   return node;
 };
 
+export const createHeading = (level = 1, label = '{label}') => {
+  const node = createNode(`h${level}`);
+  node.innerText = label;
+  return node;
+};
+
 export const makeBitArray = (size) => {
   let bob = 2**size;
   return makeArray(size, () => {
@@ -259,13 +265,21 @@ export class GameBase extends DisplayObject {
 };
 
 export class BrickMaker extends DisplayObject {
-	constructor(color, size = 4, type = 'digits') {
+	constructor({
+    size = 4,
+    type = 'digits',
+    color = 'red',
+    scale = 30,
+    gap = 1
+  } = {}) {
 
 		super();
 
 		this.color = color;
 		this.size = size;
+    this.scale = scale;
     this.type = type;
+    this.gap = gap;
     this.hexMap = size*size > 16 ? makeHexMap() : makeHexMap(false);
     this.typeValues = {
       'digits': makeArray(size*size, () => 1),
@@ -274,18 +288,16 @@ export class BrickMaker extends DisplayObject {
 
 		const node = this.node = createNode('div', 'brick-maker');
 		const bits = this.bits = [];
-		const bob = 30;
-		const gap = 1;
     
 		node.style.setProperty('--color', this.color);
-		node.style.width = node.style.height = `${bob*size + (gap*(size-1))}px`;
+		node.style.width = node.style.height = `${scale*size + (gap*(size-1))}px`;
 		node.style.gap = `${gap}px`;
 
 		makeArray(size).forEach((y) => {
 			makeArray(size).forEach((x) => {
 
 				const bit = createNode('div', 'brick-maker-bit');
-				bit.style.width = bit.style.height = `${bob}px`;
+				bit.style.width = bit.style.height = `${scale}px`;
 				bit.dataset.x = x;
 				bit.dataset.y = y;
 				bit.dataset.value = this.typeValues[this.type][x];
@@ -309,7 +321,7 @@ export class BrickMaker extends DisplayObject {
     switch(this.type) {
       case 'digits':
         total = makeArray(this.size*this.size, () => 0);
-        bits.forEach((bit, i) => {
+        this.bits.forEach((bit, i) => {
           if(bit.dataset.active==='Y') {
             total[i] = Number(bit.dataset.value);
           };
