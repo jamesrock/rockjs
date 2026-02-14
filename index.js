@@ -266,47 +266,18 @@ export class BrickMaker extends DisplayObject {
 		this.color = color;
 		this.size = size;
     this.type = type;
-
-		const node = this.node = createNode('div', 'brick-maker');
-		const bob = 30;
-		const gap = 1;
-		const bits = [];
-    const hexMap = size*size > 16 ? makeHexMap() : makeHexMap(false);
-    const typeValues = {
+    this.hexMap = size*size > 16 ? makeHexMap() : makeHexMap(false);
+    this.typeValues = {
       'digits': makeArray(size*size, () => 1),
       'binary': makeBitArray(size)
     };
 
-		const calculate = () => {
-      let total = null;
-      switch(this.type) {
-        case 'digits':
-          total = makeArray(size*size, () => 0);
-          bits.forEach((bit, i) => {
-            if(bit.dataset.active==='Y') {
-              total[i] = Number(bit.dataset.value);
-            };
-          });
-          this.value = JSON.stringify(total);
-        break;
-        case 'binary':
-          total = makeArray(size, () => 0);
-          makeArray(size).forEach((y) => {
-            bits.filter((bit) => bit.dataset.y == y).forEach((bit) => {
-              if(bit.dataset.active==='Y') {
-                total[y] += Number(bit.dataset.value);
-              };
-            });
-            total[y] = hexMap[total[y]];
-          });
-          this.value = `0x${total.join('')}`;
-        break;
-      };
-      this.dispatchEvent('result');
-		};
-
+		const node = this.node = createNode('div', 'brick-maker');
+		const bits = this.bits = [];
+		const bob = 30;
+		const gap = 1;
+    
 		node.style.setProperty('--color', this.color);
-
 		node.style.width = node.style.height = `${bob*size + (gap*(size-1))}px`;
 		node.style.gap = `${gap}px`;
 
@@ -314,25 +285,72 @@ export class BrickMaker extends DisplayObject {
 			makeArray(size).forEach((x) => {
 
 				const bit = createNode('div', 'brick-maker-bit');
-				let active = false;
 				bit.style.width = bit.style.height = `${bob}px`;
 				bit.dataset.x = x;
 				bit.dataset.y = y;
-				bit.dataset.value = typeValues[this.type][x];
+				bit.dataset.value = this.typeValues[this.type][x];
 				bit.dataset.active = 'N';
 				node.appendChild(bit);
 
 				bits.push(bit);
 
 				bit.addEventListener('click', () => {
-					active = !active;
-					bit.dataset.active = active ? 'Y' : 'N';
-					calculate();
+					bit.dataset.active = bit.dataset.active === 'Y' ? 'N' : 'Y';
+					this.calculate();
 				});
 
 			});
 		});
 
 	};
+  calculate() {
+    
+    let total = null;
+    switch(this.type) {
+      case 'digits':
+        total = makeArray(this.size*this.size, () => 0);
+        bits.forEach((bit, i) => {
+          if(bit.dataset.active==='Y') {
+            total[i] = Number(bit.dataset.value);
+          };
+        });
+        this.value = JSON.stringify(total);
+      break;
+      case 'binary':
+        total = makeArray(this.size, () => 0);
+        makeArray(this.size).forEach((y) => {
+          this.bits.filter((bit) => bit.dataset.y == y).forEach((bit) => {
+            if(bit.dataset.active==='Y') {
+              total[y] += Number(bit.dataset.value);
+            };
+          });
+          total[y] = this.hexMap[total[y]];
+        });
+        this.value = `0x${total.join('')}`;
+      break;
+    };
+    this.dispatchEvent('result');
+
+  };
+  invert() {
+
+    this.bits.forEach((bit) => {
+      bit.dataset.active = bit.dataset.active === 'Y' ? 'N' : 'Y';
+    });
+    this.calculate();
+
+    return this;
+
+  };
+  randomise() {
+
+    this.bits.forEach((bit) => {
+      bit.dataset.active = getRandom(['Y', 'N']);
+    });
+    this.calculate();
+
+    return this;
+
+  };
   value = null;
 };
