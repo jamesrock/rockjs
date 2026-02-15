@@ -26,6 +26,12 @@ export const getDateTimeString = (type = 'short') => `${getDateString(type)} ${g
 export const isValidKey = (key, options) => options.includes(key);
 export const makeArray = (length, mapper = (a, i) => i) => Array.from({length}, mapper);
 
+export const empty = (node) => {
+  while(node.firstChild) {
+    node.removeChild(node.firstChild);
+  };
+};
+
 export const shuffle = (a) => {
   for(let i = 0; i < a.length; i++) {
     const b = Math.floor(Math.random() * a.length);
