@@ -21,7 +21,7 @@ export const formatTime = (t) => `${pad(formatMinutes(t))}:${pad(formatSeconds(t
 export const formatNumber = (n) => formatter.format(n);
 export const formatCurrency = (n) => currencyFormatter.format(n);
 export const formatDate = (date, type = 'short') => date.toLocaleDateString('en-GB', { dateStyle: type });
-export const getDateString = (type = 'short') => new Date().toLocaleDateString('en-GB', { dateStyle: type });
+export const getDateString = (type = 'short') => formatDate(new Date(), type);
 export const getTimeString = (type = 'short') => new Date().toLocaleTimeString('en-GB', { timeStyle: type });
 export const getDateTimeString = (type = 'short') => `${getDateString(type)} ${getTimeString(type)}`;
 export const isValidKey = (key, options) => options.includes(key);
@@ -31,6 +31,7 @@ export const roundTo = (number, to) => (Math.round(number*to)/to);
 export const ceilTo = (number, to) => (Math.ceil(number*to)/to);
 export const getXPercentOfY = (x, y) => (y*(x/100));
 export const getXAsPercentOfY = (x, y) => ((x/y)*100);
+export const toDouble = (n) => (n < 10 ? `0${n}` : n);
 
 const sortingMethods = {
 	'0-9': (prop) => (a, b) => prop(a)-prop(b),
