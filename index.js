@@ -1,7 +1,4 @@
-const formatMinutes = (time) => Math.floor((time % (1000 * 60 * 60)) / (1000 * 60));
-const formatSeconds = (time) => Math.floor((time % (1000 * 60)) / 1000);
-const pad = (time) => time.toString().padStart(2, '0');
-const formatter = new Intl.NumberFormat('en-GB');
+const numberFormatter = new Intl.NumberFormat('en-GB');
 const currencyFormatter = new Intl.NumberFormat('en-GB', {style: 'currency', currency: 'GBP'});
 
 export const random = (min, max) => (Math.floor(Math.random()*((max-min)+1))+min);
@@ -17,8 +14,11 @@ export const isTiny = () => !window.matchMedia('(min-width: 450px)').matches;
 export const isDarkMode = () => window.matchMedia('(prefers-color-scheme: dark)').matches;
 export const makeEven = (value) => value % 2 === 1 ? value - 1 : value;
 export const limit = (value, max) => value > max ? max : value;
-export const formatTime = (t) => `${pad(formatMinutes(t))}:${pad(formatSeconds(t))}`;
-export const formatNumber = (n) => formatter.format(n);
+export const toDouble = (a) => a.toString().padStart(2, '0');
+export const formatMinutes = (ms) => toDouble(Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60)));
+export const formatSeconds = (ms) => toDouble(Math.floor((ms % (1000 * 60)) / 1000));
+export const formatTime = (ms) => `${formatMinutes(ms)}:${formatSeconds(ms)}`;
+export const formatNumber = (n) => numberFormatter.format(n);
 export const formatCurrency = (n) => currencyFormatter.format(n);
 export const formatDate = (date, type = 'short') => date.toLocaleDateString('en-GB', { dateStyle: type });
 export const getDateString = (type = 'short') => formatDate(new Date(), type);
@@ -31,7 +31,6 @@ export const roundTo = (number, to) => (Math.round(number*to)/to);
 export const ceilTo = (number, to) => (Math.ceil(number*to)/to);
 export const getXPercentOfY = (x, y) => (y*(x/100));
 export const getXAsPercentOfY = (x, y) => ((x/y)*100);
-export const toDouble = (n) => (n < 10 ? `0${n}` : n);
 
 const sortingMethods = {
 	'0-9': (prop) => (a, b) => prop(a)-prop(b),
