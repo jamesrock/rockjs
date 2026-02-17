@@ -26,6 +26,41 @@ export const getDateTimeString = (type = 'short') => `${getDateString(type)} ${g
 export const isValidKey = (key, options) => options.includes(key);
 export const makeArray = (length, mapper = (a, i) => i) => Array.from({length}, mapper);
 
+const sortingMethods = {
+	'0-9': (prop) => (a, b) => prop(a)-prop(b),
+	'9-0': (prop) => (a, b) => prop(b)-prop(a),
+	'A-Z': (prop) => (a, b) => {
+    a = prop(a);
+    b = prop(b);
+    if(a<b) {
+      return -1;
+    }
+    else if(a>b) {
+      return 1;
+    }
+    else {
+      return 0;
+    };
+  },
+	'Z-A': (prop) => (a, b) => {
+    a = prop(a);
+    b = prop(b);
+    if(b<a) {
+      return -1;
+    }
+    else if(b>a) {
+      return 1;
+    }
+    else {
+      return 0;
+    };
+  }
+};
+
+export const sort = (target, prop, method) => {
+  return target.sort(sortingMethods[method](prop));
+};
+
 export const setDocumentHeight = () => {
   document.documentElement.style.height = window.navigator.standalone ? '100vh' : '100svh';
 };
