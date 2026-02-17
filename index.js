@@ -62,9 +62,7 @@ const sortingMethods = {
   }
 };
 
-export const sort = (target, prop, method) => {
-  return target.sort(sortingMethods[method](prop));
-};
+export const sort = (target, prop, method) => target.sort(sortingMethods[method](prop));
 
 export const setDocumentHeight = () => {
   document.documentElement.style.height = window.navigator.standalone ? '100vh' : '100svh';
