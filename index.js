@@ -25,6 +25,11 @@ export const getTimeString = (type = 'short') => new Date().toLocaleTimeString('
 export const getDateTimeString = (type = 'short') => `${getDateString(type)} ${getTimeString(type)}`;
 export const isValidKey = (key, options) => options.includes(key);
 export const makeArray = (length, mapper = (a, i) => i) => Array.from({length}, mapper);
+export const floorTo = (number, to) => (Math.floor(number*to)/to);
+export const roundTo = (number, to) => (Math.round(number*to)/to);
+export const ceilTo = (number, to) => (Math.ceil(number*to)/to);
+export const getXPercentOfY = (x, y) => (y*(x/100));
+export const getXAsPercentOfY = (x, y) => ((x/y)*100);
 
 const sortingMethods = {
 	'0-9': (prop) => (a, b) => prop(a)-prop(b),
