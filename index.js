@@ -431,3 +431,93 @@ export class BrickMaker extends DisplayObject {
   };
   value = null;
 };
+
+export class Collection extends Array {
+	constructor() {
+		
+    super();
+
+	};
+	getItemByKeyValue(key, value) {
+
+		return this.filter((item) => item[key]===value)[0];
+		
+	};
+	getItemsByKeyValue(key, value) {
+
+		return this.filter((item) => item[key]===value);
+		
+	};
+	append(item) {
+	
+		this.push(item);
+		return item;
+		
+	};
+	prepend(item) {
+	
+		this.unshift(item);
+		return item;
+		
+	};
+	exists(value) {
+
+		return (this.indexOf(value)>-1);
+		
+	};
+	random() {
+	
+		return getRandom(this);
+		
+	};
+	remove(item) {
+		
+		return this.removeAt(this.getIndexOf(item));
+		
+	};
+	removeAt(index) {
+	
+		this.splice(index, 1);
+		return this;
+	
+	};
+	addAt(item, index) {
+		
+		this.splice(index, 0, item);
+		return item;
+		
+	};
+	first() {
+		
+		return this[0];
+		
+	};
+	last() {
+		
+		return this[this.length-1];
+		
+	};
+	swap(aIndex, bIndex) {
+	
+		var 
+		aProp = this[aIndex],
+		bProp = this[bIndex];
+		
+		this[aIndex] = bProp;
+		this[bIndex] = aProp;
+		
+		return this;
+		
+	};
+	pushift() {
+
+		this.push(this.shift());
+		return this;
+
+	};
+	shuffle() {
+    
+		return shuffle(this);
+
+  };
+};
