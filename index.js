@@ -20,6 +20,7 @@ export const limit = (value, max) => value > max ? max : value;
 export const formatTime = (t) => `${pad(formatMinutes(t))}:${pad(formatSeconds(t))}`;
 export const formatNumber = (n) => formatter.format(n);
 export const formatCurrency = (n) => currencyFormatter.format(n);
+export const formatDate = (date, type = 'short') => date.toLocaleDateString('en-GB', { dateStyle: type });
 export const getDateString = (type = 'short') => new Date().toLocaleDateString('en-GB', { dateStyle: type });
 export const getTimeString = (type = 'short') => new Date().toLocaleTimeString('en-GB', { timeStyle: type });
 export const getDateTimeString = (type = 'short') => `${getDateString(type)} ${getTimeString(type)}`;
