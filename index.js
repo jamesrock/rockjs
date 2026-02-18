@@ -337,7 +337,8 @@ export class BrickMaker extends DisplayObject {
     type = 'digits',
     color = 'red',
     scale = 30,
-    gap = 1
+    gap = 1,
+    prefix = '0x'
   } = {}) {
 
 		super();
@@ -347,6 +348,7 @@ export class BrickMaker extends DisplayObject {
     this.scale = scale;
     this.type = type;
     this.gap = gap;
+    this.prefix = prefix;
     this.hexMap = size*size > 16 ? makeHexMap() : makeHexMap(false);
     this.typeValues = {
       'digits': makeArray(size*size, () => 1),
@@ -405,7 +407,7 @@ export class BrickMaker extends DisplayObject {
           });
           total[y] = this.hexMap[total[y]];
         });
-        this.value = `0x${total.join('')}`;
+        this.value = `${this.prefix}${total.join('')}`;
       break;
     };
     this.dispatchEvent('result');
