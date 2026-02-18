@@ -334,7 +334,7 @@ export class GameBase extends DisplayObject {
 export class BrickMaker extends DisplayObject {
 	constructor({
     size = 4,
-    type = 'digits',
+    type = 'binary',
     color = 'red',
     scale = 30,
     gap = 1,
@@ -351,8 +351,8 @@ export class BrickMaker extends DisplayObject {
     this.prefix = prefix;
     this.hexMap = size*size > 16 ? makeHexMap() : makeHexMap(false);
     this.typeValues = {
-      'digits': makeArray(size*size, () => 1),
-      'binary': makeBitArray(size)
+      'binary': makeArray(size*size, () => 1),
+      'hex': makeBitArray(size)
     };
 
 		const node = this.node = createNode('div', 'brick-maker');
@@ -388,7 +388,7 @@ export class BrickMaker extends DisplayObject {
     
     let total = null;
     switch(this.type) {
-      case 'digits':
+      case 'binary':
         total = makeArray(this.size*this.size, () => 0);
         this.bits.forEach((bit, i) => {
           if(bit.dataset.active==='Y') {
@@ -397,7 +397,7 @@ export class BrickMaker extends DisplayObject {
         });
         this.value = JSON.stringify(total);
       break;
-      case 'binary':
+      case 'hex':
         total = makeArray(this.size, () => 0);
         makeArray(this.size).forEach((y) => {
           this.bits.filter((bit) => bit.dataset.y == y).forEach((bit) => {
