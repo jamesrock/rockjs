@@ -26,9 +26,9 @@ export const getTimeString = (type = 'short') => new Date().toLocaleTimeString('
 export const getDateTimeString = (type = 'short') => `${getDateString(type)} ${getTimeString(type)}`;
 export const isValidKey = (key, options) => options.includes(key);
 export const makeArray = (length, mapper = (a, i) => i) => Array.from({length}, mapper);
-export const floorTo = (number, to) => (Math.floor(number*to)/to);
-export const roundTo = (number, to) => (Math.round(number*to)/to);
-export const ceilTo = (number, to) => (Math.ceil(number*to)/to);
+export const floorTo = (number, to = 1) => (Math.floor(number*to)/to);
+export const roundTo = (number, to = 1) => (Math.round(number*to)/to);
+export const ceilTo = (number, to = 1) => (Math.ceil(number*to)/to);
 export const getXPercentOfY = (x, y) => (y*(x/100));
 export const getXAsPercentOfY = (x, y) => ((x/y)*100);
 
@@ -521,4 +521,58 @@ export class Collection extends Array {
 		return shuffle(this);
 
   };
+};
+
+export class Time {
+  second = 1000;
+  minute = (this.second * 60);
+  hour = (this.minute * 60);
+  day = (this.hour * 24);
+  year = (this.day * 365);
+	getSeconds(ms) {
+		return floorTo(ms / this.second);
+	};
+	getMinutes(ms) {
+		return floorTo(ms / this.minute);
+	};
+	getHours(ms) {
+		return floorTo(ms / this.hour);
+	};
+	getDays(ms) {
+		return floorTo(ms / this.day);
+	};
+	getYears(ms) {
+		return floorTo(ms / this.year);
+	};
+  getMillisecondsInHour(ms) {
+		return (ms % this.hour);
+	};
+  getMillisecondsInMinute(ms) {
+		return (ms % this.minute);
+	};
+	getMillisecondsInDay(ms) {
+		return (ms % this.day);
+	};
+  getSecondsInDay(ms) {
+		return (this.getSeconds(ms) % this.day);
+	};
+	getMinutesInDay(ms) {
+		return (this.getMinutes(ms) % this.day);
+	};
+	getHoursInDay(ms) {
+		return (this.getHours(ms) % this.day);
+	};
+	getDaysInYear(ms) {
+		return (this.getDays(ms) % this.year);
+	};
+  getMinutesInHour(ms) {
+		return floorTo(this.getMillisecondsInHour(ms) / this.minute);
+	};
+  getSecondsInMinute(ms) {
+		return floorTo(this.getMillisecondsInMinute(ms) / this.second);
+	};
+  formatSeconds = (ms) => toDouble(this.getSecondsInMinute(ms));
+  formatMinutes = (ms) => toDouble(this.getMinutesInHour(ms));
+  formatHours = (ms) => toDouble(this.getHours(ms));
+  format = (ms) => `${this.formatMinutes(ms)}:${this.formatSeconds(ms)}`;
 };
