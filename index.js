@@ -160,6 +160,24 @@ export const makeHexMap = (full = true) => {
   return out;
 };
 
+const makeBitMapItem = (a, size) => {
+  const ref = makeBitArray(size);
+  let leftover = a;
+  return makeArray(size, (v, i) => {
+    if(leftover >= ref[i]) {
+      leftover -= ref[i];
+      return 1;
+    }
+    else {
+      return 0;
+    };
+  });
+};
+
+export const makeBitMap = (size) => {
+  return makeArray(2**size, (a, i) => makeBitMapItem(i, size));
+};
+
 export class Storage {
   constructor(namespace) {
 
