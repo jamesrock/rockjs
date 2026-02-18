@@ -144,22 +144,6 @@ export const makeBitArray = (size) => {
   });
 };
 
-export const makeHexMap = (full = true) => {
-  const out = [];
-  const hexMap = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
-  if(full) {
-    makeArray(hexMap.length).forEach((x) => {
-      makeArray(hexMap.length).forEach((y) => {
-        out.push(`${hexMap[x]}${hexMap[y]}`);
-      });
-    });
-  }
-  else {
-    return hexMap;
-  };
-  return out;
-};
-
 const makeBitMapItem = (a, size) => {
   const ref = makeBitArray(size);
   let leftover = a;
@@ -176,6 +160,22 @@ const makeBitMapItem = (a, size) => {
 
 export const makeBitMap = (size) => {
   return makeArray(2**size, (a, i) => makeBitMapItem(i, size));
+};
+
+export const makeHexMap = (full = true) => {
+  const out = [];
+  const hexMap = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
+  if(full) {
+    makeArray(hexMap.length).forEach((x) => {
+      makeArray(hexMap.length).forEach((y) => {
+        out.push(`${hexMap[x]}${hexMap[y]}`);
+      });
+    });
+  }
+  else {
+    return hexMap;
+  };
+  return out;
 };
 
 export class Storage {
