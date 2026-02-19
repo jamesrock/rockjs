@@ -91,6 +91,14 @@ export const createNode = (type, className) => {
   return node;
 };
 
+export const createSVGNode = (type = 'svg', className) => {
+  const node = document.createElementNS('http://www.w3.org/2000/svg', type);
+  if(className) {
+    node.classList.add(className);
+  };
+  return node;
+};
+
 export const createButton = (label = '{label}', className) => {
   const btn = createNode('button', className);
   btn.innerText = label;
