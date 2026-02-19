@@ -9,15 +9,17 @@ export const pluckLast = (a) => a.splice(a.length-1, 1)[0];
 export const getRandom = (a) => a[randomIndex(a)];
 export const getFirst = (a) => a[0];
 export const getLast = (a) => a[a.length-1];
-export const isLandscape = () => window.matchMedia('(orientation: landscape)').matches;
-export const isTiny = () => !window.matchMedia('(min-width: 450px)').matches;
-export const isDarkMode = () => window.matchMedia('(prefers-color-scheme: dark)').matches;
-export const makeEven = (value) => value % 2 === 1 ? value - 1 : value;
-export const limit = (value, max) => value > max ? max : value;
+export const isOrientation = (orientation) => matchMedia(`(orientation: ${orientation})`).matches;
+export const maxWidth = (width) => matchMedia(`(max-width: ${width}px)`).matches;
+export const minWidth = (width) => matchMedia(`(min-width: ${width}px)`).matches;
+export const isColorScheme = (colorScheme) => matchMedia(`(prefers-color-scheme: ${colorScheme})`).matches;
+export const isLandscape = () => isOrientation('landscape');
+export const isPortrait = () => isOrientation('portrait');
+export const isTiny = () => !minWidth(450);
+export const isDarkMode = () => isColorScheme('dark');
+export const makeEven = (a) => (a % 2 === 1 ? a - 1 : a);
+export const limit = (value, max) => (value > max ? max : value);
 export const toDouble = (a) => a.toString().padStart(2, '0');
-export const formatMinutes = (ms) => toDouble(Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60)));
-export const formatSeconds = (ms) => toDouble(Math.floor((ms % (1000 * 60)) / 1000));
-export const formatTime = (ms) => `${formatMinutes(ms)}:${formatSeconds(ms)}`;
 export const formatNumber = (n) => numberFormatter.format(n);
 export const formatCurrency = (n) => currencyFormatter.format(n);
 export const formatDate = (date, type = 'short') => date.toLocaleDateString('en-GB', { dateStyle: type });
@@ -31,6 +33,10 @@ export const roundTo = (number, to = 1) => (Math.round(number*to)/to);
 export const ceilTo = (number, to = 1) => (Math.ceil(number*to)/to);
 export const getXPercentOfY = (x, y) => (y*(x/100));
 export const getXAsPercentOfY = (x, y) => ((x/y)*100);
+// to be removed
+export const formatMinutes = (ms) => toDouble(Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60)));
+export const formatSeconds = (ms) => toDouble(Math.floor((ms % (1000 * 60)) / 1000));
+export const formatTime = (ms) => `${formatMinutes(ms)}:${formatSeconds(ms)}`;
 
 const sortingMethods = {
 	'0-9': (prop) => (a, b) => prop(a)-prop(b),
