@@ -297,6 +297,24 @@ export class DisplayObject {
 		return this;
 
 	};
+  destroy() {
+
+    this.node.parentNode.removeChild(this.node);
+    return this;
+
+  };
+  setStyle(key, value) {
+		
+		this.node.style[key] = value;
+		return this;
+
+	};
+  setProp(key, value) {
+
+    this.node.dataset[key] = value;
+    return this;
+
+  };
 	addEventListener(event, handler, passive = true) {
 		
 		this.node.addEventListener(event, handler, {passive});
@@ -609,4 +627,180 @@ export class Time {
   formatMinutes = (ms) => toDouble(this.getMinutesInHour(ms));
   formatHours = (ms) => toDouble(this.getHours(ms));
   format = (ms) => `${this.formatMinutes(ms)}:${this.formatSeconds(ms)}`;
+};
+
+export class PlayingCard extends DisplayObject {
+  constructor(deck, value, suit) {
+
+    super();
+
+    this.deck = deck;
+    this.value = value;
+    this.suit = suit;
+    this.rawValue = this.deck.values.indexOf(this.value);
+    this.id = `${this.value}${this.suit}`;
+    this.color = this.deck.getSuitColor(this.suit);
+    this.icon = this.deck.getSuitIcon(this.suit);
+    this.node = this.make();
+
+  };
+  make() {
+
+    const
+		node = createNode('div', 'card'),
+    svg = createSVGNode('svg'),
+		use = createSVGNode('use');
+
+		use.setAttribute('href', `${this.deck.sprite}#${this.suit}${this.value}`);
+
+    svg.append(use);
+    node.append(svg);
+
+    return node;
+
+  };
+};
+
+export class DeckOfPlayingCards {
+  constructor({
+    sprite = '/sprite.svg',
+    saved = [],
+    cardMaker = (deck, value, suit) => new PlayingCard(deck, value, suit)
+  } = {}) {
+
+    this.sprite = sprite;
+    this.cardMaker = cardMaker;
+    this.cards = saved.length ? this.makeFromSaved(saved) : this.make();
+    this.map = this.makeMap();
+    this.shuffledMap = this.makeShuffledMap();
+
+  };
+  make() {
+
+    return shuffle(shuffle(this.makeDeckValues().map(([value, suit]) => this.cardMaker(this, value, suit))));
+
+  };
+  makeMap() {
+    
+    var out = {};
+    this.cards.forEach((card) => {
+      out[card.id] = card;
+    });
+    return out;
+
+  };
+  makeShuffledMap() {
+
+    return this.cards.map((card) => card.id);
+    
+  };
+  makeSaveMap() {
+
+    return this.cards.map((card) => [card.value, card.suit]);
+
+  };
+  makeFromSaved(saved) {
+
+    return saved.map(([value, suit]) => this.cardMaker(this, value, suit));
+
+  };
+  appendTo(target) {
+
+    this.shuffledMap.forEach((id) => {
+      this.map[id].appendTo(target);
+    });
+
+    return this;
+
+  };
+  destroy() {
+    
+    this.shuffledMap.forEach((id) => {
+      this.map[id].destroy();
+    });
+
+    return this;
+
+  };
+  makeSuitValues() {
+
+    return makeArray(this.suits.length).map((suit) => this.suits[suit]);
+
+  };
+  makePipValues() {
+
+    return makeArray(this.values.length).map((value) => this.values[value]);
+
+  };
+  makeDeckValues() {
+
+    var out = [];
+
+    this.makeSuitValues().forEach((suit) => {
+      this.makePipValues().forEach((value) => {
+        out.push([value, suit]);
+      });
+    });
+
+    return out;
+
+  };
+  makeCard(value, suit) {
+
+    return this.cardMaker(this, value, suit);
+
+  };
+  indexOf(id) {
+
+    return this.shuffledMap.indexOf(id);
+
+  };
+  getCard(index = 0) {
+    
+    return this.cards[index];
+
+  };
+  getSuitIcon(suit) {
+    
+    return this.suitIcons[suit];
+
+  };
+  getSuitColor(suit) {
+    
+    return this.suitColors[suit];
+
+  };
+  suits = [
+    'C',
+    'D',
+    'H',
+    'S'
+  ];
+  values = [
+    'A',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10',
+    'J',
+    'Q',
+    'K'
+  ];
+  suitIcons = {
+    'C': '&#9827;',
+    'D': '&#9830;',
+    'H': '&#9829;',
+    'S': '&#9824;'
+  };
+  suitColors = {
+    'C': 'black',
+    'D': 'red',
+    'H': 'red',
+    'S': 'black'
+  };
 };
