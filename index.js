@@ -637,7 +637,7 @@ export class PlayingCard extends DisplayObject {
     this.deck = deck;
     this.value = value;
     this.suit = suit;
-    this.rawValue = this.deck.values.indexOf(this.value);
+    this.rawValue = (this.deck.values.indexOf(this.value) + 1);
     this.id = `${this.value}${this.suit}`;
     this.color = this.deck.getSuitColor(this.suit);
     this.icon = this.deck.getSuitIcon(this.suit);
