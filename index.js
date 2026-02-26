@@ -92,16 +92,20 @@ export const shuffle = (a) => {
 export const createNode = (type, className) => {
   const node = document.createElement(type);
   if(className) {
-    node.classList.add(className);
-  };
+		className.split('.').forEach((a) => {
+			node.classList.add(a);
+		});
+	};
   return node;
 };
 
 export const createSVGNode = (type = 'svg', className) => {
   const node = document.createElementNS('http://www.w3.org/2000/svg', type);
   if(className) {
-    node.classList.add(className);
-  };
+		className.split('.').forEach((a) => {
+			node.classList.add(a);
+		});
+	};
   return node;
 };
 
@@ -124,9 +128,7 @@ export const createOutput = (rows = 7) => {
   return textarea;
 };
 
-export const createContainer = (className) => {
-  return createNode('div', className);
-};
+export const createContainer = (className) => createNode('div', className);
 
 export const createSelect = (options) => {
   const node = createNode('select');
@@ -147,6 +149,34 @@ export const createOption = (label = '{label}', value = 0) => {
 export const createHeading = (level = 1, label = '{label}') => {
   const node = createNode(`h${level}`);
   node.innerText = label;
+  return node;
+};
+
+export const createRadio = (value = 0, name = '{name}', id = '{id}', checked = false) => {
+  const node = createInput(value, 'radio');
+  node.name = name;
+  node.id = id;
+  node.checked = checked;
+  return node;
+};
+
+export const createLabel = (label = '{label}', id = '{id}', className) => {
+  const node = createNode('label', className);
+  node.innerHTML = label;
+  node.setAttribute('for', id);
+  return node;
+};
+
+export const createToggle = (options, id, defaultValue) => {
+  const node = createNode('div', 'toggle');
+  options.forEach((option) => {
+    const optionNode = createNode('div', 'toggle-item');
+    const radio = createRadio(option, id, `${option}-${id}`, option===defaultValue);
+    const label = createLabel(option, radio.id);
+    optionNode.append(radio);
+    optionNode.append(label);
+    node.append(optionNode);
+  });
   return node;
 };
 
@@ -249,7 +279,7 @@ export class Storage {
 
 export class GUID {
   constructor() {
-    
+
     this.chars = [...this.uppercase, ...this.lowercase, ...this.numeric];
 
   };
@@ -257,14 +287,14 @@ export class GUID {
   lowercase = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
   numeric = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
   segment() {
-    
+
     return makeArray(4, (a, i) => getRandom(i > 0 ? this.chars : this.uppercase)).join('');
 
   };
   get() {
-    
+
     return makeArray(this.segments, () => this.segment()).join('-');
-    
+
   };
   segments = 3;
 };
@@ -304,7 +334,7 @@ export class DisplayObject {
 
   };
   setStyle(key, value) {
-		
+
 		this.node.style[key] = value;
 		return this;
 
@@ -316,13 +346,13 @@ export class DisplayObject {
 
   };
 	addEventListener(event, handler, passive = true) {
-		
+
 		this.node.addEventListener(event, handler, {passive});
 		return this;
-		
+
 	};
 	dispatchEvent(event) {
-		
+
 		this.node.dispatchEvent(new Event(event));
 		return this;
 
@@ -333,19 +363,19 @@ export class GameBase extends DisplayObject {
   constructor(name) {
 
     super();
-    
+
     this.node = createNode('div', name);
 		this.gameOverNode = createNode('div', 'game-over');
 		this.canvas = createNode('canvas', 'game-canvas');
 		this.ctx = this.canvas.getContext('2d');
 		this.storage = new Storage(`me.jamesrock.${name}`);
-    
+
   };
   showGameOverScreen() {
 
 		const best = this.storage.get('best') || 0;
 		this.storage.set('best', this.score > best ? this.score : best);
-		
+
 		this.gameOverNode.innerHTML = `\
 			<div class="game-over-body">\
 				<h1>Game over!</h1>\
@@ -417,7 +447,7 @@ export class BrickMaker extends DisplayObject {
 
 	};
   calculate() {
-    
+
     let total = null;
     switch(this.type) {
       case 'binary':
@@ -476,7 +506,7 @@ export class BrickMaker extends DisplayObject {
 
   };
   setColor(color) {
-    
+
     this.color = color;
     this.node.style.setProperty('--color', this.color);
     return this;
@@ -487,80 +517,80 @@ export class BrickMaker extends DisplayObject {
 
 export class Collection extends Array {
 	constructor() {
-		
+
     super();
 
 	};
 	getItemByKeyValue(key, value) {
 
 		return this.filter((item) => item[key]===value)[0];
-		
+
 	};
 	getItemsByKeyValue(key, value) {
 
 		return this.filter((item) => item[key]===value);
-		
+
 	};
 	append(item) {
-	
+
 		this.push(item);
 		return item;
-		
+
 	};
 	prepend(item) {
-	
+
 		this.unshift(item);
 		return item;
-		
+
 	};
 	exists(value) {
 
 		return (this.indexOf(value)>-1);
-		
+
 	};
 	random() {
-	
+
 		return getRandom(this);
-		
+
 	};
 	remove(item) {
-		
+
 		return this.removeAt(this.getIndexOf(item));
-		
+
 	};
 	removeAt(index) {
-	
+
 		this.splice(index, 1);
 		return this;
-	
+
 	};
 	addAt(item, index) {
-		
+
 		this.splice(index, 0, item);
 		return item;
-		
+
 	};
 	first() {
-		
+
 		return this[0];
-		
+
 	};
 	last() {
-		
+
 		return this[this.length-1];
-		
+
 	};
 	swap(aIndex, bIndex) {
-	
-		var 
+
+		var
 		aProp = this[aIndex],
 		bProp = this[bIndex];
-		
+
 		this[aIndex] = bProp;
 		this[bIndex] = aProp;
-		
+
 		return this;
-		
+
 	};
 	pushift() {
 
@@ -569,7 +599,7 @@ export class Collection extends Array {
 
 	};
 	shuffle() {
-    
+
 		return shuffle(this);
 
   };
@@ -681,7 +711,7 @@ export class DeckOfPlayingCards {
 
   };
   makeMap() {
-    
+
     var out = {};
     this.cards.forEach((card) => {
       out[card.id] = card;
@@ -692,7 +722,7 @@ export class DeckOfPlayingCards {
   makeShuffledMap() {
 
     return this.cards.map((card) => card.id);
-    
+
   };
   makeSaveMap() {
 
@@ -714,7 +744,7 @@ export class DeckOfPlayingCards {
 
   };
   destroy() {
-    
+
     this.shuffledMap.forEach((id) => {
       this.map[id].destroy();
     });
@@ -756,17 +786,17 @@ export class DeckOfPlayingCards {
 
   };
   getCard(index = 0) {
-    
+
     return this.cards[index];
 
   };
   getSuitIcon(suit) {
-    
+
     return this.suitIcons[suit];
 
   };
   getSuitColor(suit) {
-    
+
     return this.suitColors[suit];
 
   };
