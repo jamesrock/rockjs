@@ -167,7 +167,7 @@ export const createLabel = (label = '{label}', id = '{id}', className) => {
   return node;
 };
 
-const makeToggle = (options, name, defaultValue, className = 'toggle') => {
+export const makeToggle = (options, name, defaultValue, className = 'toggle') => {
   const node = createNode('div', className);
 	options.forEach(([label, value, optionClassName]) => {
 		const optionNode = createNode('div', 'toggle-item');
