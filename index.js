@@ -167,15 +167,15 @@ export const createLabel = (label = '{label}', id = '{id}', className) => {
   return node;
 };
 
-export const createToggle = (options, id, defaultValue) => {
-  const node = createNode('div', 'toggle');
-  options.forEach((option) => {
-    const optionNode = createNode('div', 'toggle-item');
-    const radio = createRadio(option, id, `${option}-${id}`, option===defaultValue);
-    const label = createLabel(option, radio.id);
-    optionNode.append(radio);
-    optionNode.append(label);
-    node.append(optionNode);
+const makeToggle = (options, name, defaultValue, className = 'toggle') => {
+  const node = createNode('div', className);
+	options.forEach(([label, value, optionClassName]) => {
+		const optionNode = createNode('div', 'toggle-item');
+		const radioNode = createRadio(value, name, `${name}-${value}`, value===defaultValue);
+		const labelNode = createLabel(label, radioNode.id, optionClassName);
+		optionNode.appendChild(radioNode);
+		optionNode.appendChild(labelNode);
+		node.appendChild(optionNode);
   });
   return node;
 };
