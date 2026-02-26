@@ -19,7 +19,7 @@ export const isTiny = () => !minWidth(450);
 export const isDarkMode = () => isColorScheme('dark');
 export const makeEven = (a) => (a % 2 === 1 ? a - 1 : a);
 export const limit = (value, max) => (value > max ? max : value);
-export const toDouble = (a) => a.toString().padStart(2, '0');
+export const pad = (a) => a < 10 ? `0${a}` : a;
 export const formatNumber = (n) => numberFormatter.format(n);
 export const formatCurrency = (n) => currencyFormatter.format(n);
 export const formatDate = (date, type = 'short') => date.toLocaleDateString('en-GB', { dateStyle: type });
@@ -34,8 +34,8 @@ export const ceilTo = (number, to = 1) => (Math.ceil(number*to)/to);
 export const getXPercentOfY = (x, y) => (y*(x/100));
 export const getXAsPercentOfY = (x, y) => ((x/y)*100);
 // to be removed
-export const formatMinutes = (ms) => toDouble(Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60)));
-export const formatSeconds = (ms) => toDouble(Math.floor((ms % (1000 * 60)) / 1000));
+export const formatMinutes = (ms) => pad(Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60)));
+export const formatSeconds = (ms) => pad(Math.floor((ms % (1000 * 60)) / 1000));
 export const formatTime = (ms) => `${formatMinutes(ms)}:${formatSeconds(ms)}`;
 
 const sortingMethods = {
@@ -653,9 +653,9 @@ export class Time {
   getSecondsInMinute(ms) {
 		return floorTo(this.getMillisecondsInMinute(ms) / this.second);
 	};
-  formatSeconds = (ms) => toDouble(this.getSecondsInMinute(ms));
-  formatMinutes = (ms) => toDouble(this.getMinutesInHour(ms));
-  formatHours = (ms) => toDouble(this.getHours(ms));
+  formatSeconds = (ms) => pad(this.getSecondsInMinute(ms));
+  formatMinutes = (ms) => pad(this.getMinutesInHour(ms));
+  formatHours = (ms) => pad(this.getHours(ms));
   format = (ms) => `${this.formatMinutes(ms)}:${this.formatSeconds(ms)}`;
 };
 
