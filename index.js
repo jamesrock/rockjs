@@ -89,90 +89,88 @@ export const shuffle = (a) => {
   return a;
 };
 
-export const createNode = (type, className) => {
-  const node = document.createElement(type);
-  if(className) {
-		className.split('.').forEach((a) => {
-			node.classList.add(a);
-		});
-	};
+const applyClassName = (node, className) => {
+  className?.split('.').forEach((a) => {
+		node.classList.add(a);
+  });
   return node;
 };
 
-export const createSVGNode = (type = 'svg', className) => {
-  const node = document.createElementNS('http://www.w3.org/2000/svg', type);
-  if(className) {
-		className.split('.').forEach((a) => {
-			node.classList.add(a);
-		});
-	};
-  return node;
-};
+export const makeNode = (type, className) => applyClassName(document.createElement(type), className);
 
-export const createButton = (label = '{label}', className) => {
-  const btn = createNode('button', className);
+export const makeSVGNode = (type = 'svg', className) => applyClassName(document.createElementNS('http://www.w3.org/2000/svg', type), className);
+
+export const makeButton = (label = '{label}', className) => {
+  const btn = makeNode('button', className);
   btn.innerText = label;
   return btn;
 };
 
-export const createInput = (value = 0, type = 'number') => {
-  const input = createNode('input');
+export const makeInput = (value = 0, type = 'number') => {
+  const input = makeNode('input');
   input.type = type;
   input.value = value;
   return input;
 };
 
-export const createOutput = (rows = 7) => {
-  const textarea = createNode('textarea');
-  textarea.rows = rows;
-  return textarea;
+export const makeOutput = (rows = 7) => {
+  const node = makeNode('textarea');
+  node.rows = rows;
+  return node;
 };
 
-export const createContainer = (className) => createNode('div', className);
+export const makeContainer = (className) => makeNode('div', className);
 
-export const createSelect = (options) => {
-  const node = createNode('select');
+export const makeSelect = (options) => {
+  const node = makeNode('select');
   options.forEach(([label, value]) => {
-    const option = createOption(label, value);
+    const option = makeOption(label, value);
     node.appendChild(option);
   })
   return node;
 };
 
-export const createOption = (label = '{label}', value = 0) => {
-  const node = createNode('option');
+export const makeOption = (label = '{label}', value = 0) => {
+  const node = makeNode('option');
   node.innerText = label;
   node.value = value;
   return node;
 };
 
-export const createHeading = (level = 1, label = '{label}') => {
-  const node = createNode(`h${level}`);
+export const makeHeading = (level = 1, label = '{label}') => {
+  const node = makeNode(`h${level}`);
   node.innerText = label;
   return node;
 };
 
-export const createRadio = (value = 0, name = '{name}', id = '{id}', checked = false) => {
-  const node = createInput(value, 'radio');
+export const makeLink = (href = '{href}', label = '{label}', className) => {
+  const node = makeNode('a', className);
+  node.href = href;
+  node.innerText = label;
+  return node;
+};
+
+export const makeRadio = (value = 0, name = '{name}', id = '{id}', checked = false) => {
+  const node = makeInput(value, 'radio');
   node.name = name;
   node.id = id;
   node.checked = checked;
   return node;
 };
 
-export const createLabel = (label = '{label}', id = '{id}', className) => {
-  const node = createNode('label', className);
+export const makeLabel = (label = '{label}', id = '{id}', className) => {
+  const node = makeNode('label', className);
   node.innerHTML = label;
   node.setAttribute('for', id);
   return node;
 };
 
 export const makeToggle = (options, name, defaultValue, className = 'toggle') => {
-  const node = createNode('div', className);
+  const node = makeNode('div', className);
 	options.forEach(([label, value, optionClassName]) => {
-		const optionNode = createNode('div', 'toggle-item');
-		const radioNode = createRadio(value, name, `${name}-${value}`, value===defaultValue);
-		const labelNode = createLabel(label, radioNode.id, optionClassName);
+		const optionNode = makeNode('div', 'toggle-item');
+		const radioNode = makeRadio(value, name, `${name}-${value}`, value===defaultValue);
+		const labelNode = makeLabel(label, radioNode.id, optionClassName);
 		optionNode.appendChild(radioNode);
 		optionNode.appendChild(labelNode);
 		node.appendChild(optionNode);
@@ -364,9 +362,9 @@ export class GameBase extends DisplayObject {
 
     super();
 
-    this.node = createNode('div', name);
-		this.gameOverNode = createNode('div', 'game-over');
-		this.canvas = createNode('canvas', 'game-canvas');
+    this.node = makeNode('div', name);
+		this.gameOverNode = makeNode('div', 'game-over');
+		this.canvas = makeNode('canvas', 'game-canvas');
 		this.ctx = this.canvas.getContext('2d');
 		this.storage = new Storage(`me.jamesrock.${name}`);
 
@@ -417,7 +415,7 @@ export class BrickMaker extends DisplayObject {
       'hex': makeBitArray(size)
     };
 
-		const node = this.node = createNode('div', 'brick-maker');
+		const node = this.node = makeNode('div', 'brick-maker');
 		const bits = this.bits = [];
 
     this.setColor(color);
@@ -427,7 +425,7 @@ export class BrickMaker extends DisplayObject {
 		makeArray(size).forEach((y) => {
 			makeArray(size).forEach((x) => {
 
-				const bit = createNode('div', 'brick-maker-bit');
+				const bit = makeNode('div', 'brick-maker-bit');
 				bit.style.width = bit.style.height = `${scale}px`;
 				bit.dataset.x = x;
 				bit.dataset.y = y;
@@ -677,9 +675,9 @@ export class PlayingCard extends DisplayObject {
   make() {
 
     const
-		node = createNode('div', 'card'),
-    svg = createSVGNode('svg'),
-		use = createSVGNode('use');
+		node = makeNode('div', 'card'),
+    svg = makeSVGNode('svg'),
+		use = makeSVGNode('use');
 
 		use.setAttribute('href', `${this.deck.sprite}#${this.suit}${this.value}`);
 
@@ -834,3 +832,16 @@ export class DeckOfPlayingCards {
     'S': 'black'
   };
 };
+
+// temporary alias
+export const createNode = makeNode;
+export const createSVGNode = makeSVGNode;
+export const createButton = makeButton;
+export const createInput = makeInput;
+export const createOutput = makeOutput;
+export const createContainer = makeContainer;
+export const createSelect = makeSelect;
+export const createOption = makeOption;
+export const createHeading = makeHeading;
+export const createRadio = makeRadio;
+export const createLabel = makeLabel;
