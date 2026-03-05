@@ -121,12 +121,13 @@ export const makeOutput = (rows = 7) => {
 
 export const makeContainer = (className) => makeNode('div', className);
 
-export const makeSelect = (options) => {
+export const makeSelect = (options, defaultValue = options[0][1]) => {
   const node = makeNode('select');
   options.forEach(([label, value]) => {
     const option = makeOption(label, value);
     node.appendChild(option);
-  })
+  });
+  node.value = defaultValue;
   return node;
 };
 
@@ -218,6 +219,47 @@ export const makeHexMap = (full = true) => {
     return hexMap;
   };
   return out;
+};
+
+export const makeMap = (items, key = 'id') => {
+  const out = {};
+  items.forEach((item) => {
+    out[item[key]] = item;
+  });
+  return out;
+};
+
+export const addDragListeners = (target, tolerance) => {
+
+  const rounder = new Rounder(tolerance);
+  let touch = null;
+
+  target.addEventListener('touchstart', (e) => {
+
+    touch = e.touches[0];
+    e.preventDefault();
+
+  });
+
+  target.addEventListener('touchmove', (e) => {
+
+    const {clientX: originalClientX, clientY: originalClientY} = touch;
+    const {clientX, clientY} = e.touches[0];
+    const x = rounder.round(clientX - originalClientX);
+    const y = rounder.round(clientY - originalClientY);
+
+    if(x) {
+      touch = e.touches[0];
+      target.dispatchEvent(new Event(x > 0 ? 'drag-right' : 'drag-left'));
+    };
+
+    if(y) {
+      touch = e.touches[0];
+      target.dispatchEvent(new Event(y > 0 ? 'drag-down' : 'drag-up'));
+    };
+
+  });
+
 };
 
 export class Storage {
@@ -699,22 +741,13 @@ export class DeckOfPlayingCards {
     this.sprite = sprite;
     this.cardMaker = cardMaker;
     this.cards = saved.length ? this.makeFromSaved(saved) : this.make();
-    this.map = this.makeMap();
+    this.map = makeMap(this.cards);
     this.shuffledMap = this.makeShuffledMap();
 
   };
   make() {
 
     return shuffle(shuffle(this.makeDeckValues().map(([value, suit]) => this.cardMaker(this, value, suit))));
-
-  };
-  makeMap() {
-
-    var out = {};
-    this.cards.forEach((card) => {
-      out[card.id] = card;
-    });
-    return out;
 
   };
   makeShuffledMap() {
