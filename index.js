@@ -866,6 +866,46 @@ export class DeckOfPlayingCards {
   };
 };
 
+export class SoundManager {
+  constructor(sounds) {
+
+    this.context = new AudioContext();
+    this.sounds = sounds;
+    this.buffers = {};
+
+  };
+  async load() {
+
+    return Promise.all(Object.keys(this.sounds).map((key) => this.loadBuffer(key, this.sounds[key]))).then((items) => {
+      items.forEach(([name, buffer]) => {
+        this.buffers[name] = buffer;
+      });
+    });
+
+  };
+  async loadBuffer(name, path) {
+
+    const response = await fetch(path);
+    const arrayBuffer = await response.arrayBuffer();
+    const audioBuffer = await this.context.decodeAudioData(arrayBuffer);
+    return [name, audioBuffer];
+
+  };
+  play(sound = 'point') {
+
+    if(!this.buffers[sound]) {
+      console.log(`SoundManager: '${sound}' not loaded!`);
+      return;
+    };
+
+    const source = this.context.createBufferSource();
+    source.buffer = this.buffers[sound];
+    source.connect(this.context.destination);
+    source.start();
+
+  };
+};
+
 // temporary alias
 export const createNode = makeNode;
 export const createSVGNode = makeSVGNode;
