@@ -675,27 +675,30 @@ export class Time {
 	getMillisecondsInDay(ms) {
 		return (ms % this.day);
 	};
+	getMillisecondsInYear(ms) {
+		return (ms % this.year);
+	};
   getSecondsInDay(ms) {
-		return (this.getSeconds(ms) % this.day);
+    return this.getSeconds(this.getMillisecondsInDay(ms));
 	};
 	getMinutesInDay(ms) {
-		return (this.getMinutes(ms) % this.day);
+	  return this.getMinutes(this.getMillisecondsInDay(ms));
 	};
 	getHoursInDay(ms) {
-		return (this.getHours(ms) % this.day);
+	  return this.getHours(this.getMillisecondsInDay(ms));
 	};
 	getDaysInYear(ms) {
-		return (this.getDays(ms) % this.year);
+	  return this.getDays(this.getMillisecondsInYear(ms));
 	};
   getMinutesInHour(ms) {
-		return floorTo(this.getMillisecondsInHour(ms) / this.minute);
+		return this.getMinutes(this.getMillisecondsInHour(ms));
 	};
   getSecondsInMinute(ms) {
-		return floorTo(this.getMillisecondsInMinute(ms) / this.second);
+		return this.getSeconds(this.getMillisecondsInMinute(ms));
 	};
   formatSeconds = (ms) => pad(this.getSecondsInMinute(ms));
   formatMinutes = (ms) => pad(this.getMinutesInHour(ms));
-  formatHours = (ms) => pad(this.getHours(ms));
+  formatHours = (ms) => pad(this.getHoursInDay(ms));
   format = (ms) => `${this.formatMinutes(ms)}:${this.formatSeconds(ms)}`;
 };
 
