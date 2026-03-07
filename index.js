@@ -646,56 +646,27 @@ export class Collection extends Array {
 };
 
 export class Time {
+  constructor(accuracy = 1) {
+    this.accuracy = accuracy;
+  };
   second = 1000;
   minute = (this.second * 60);
   hour = (this.minute * 60);
   day = (this.hour * 24);
   year = (this.day * 365);
-	getSeconds(ms) {
-		return floorTo(ms / this.second);
-	};
-	getMinutes(ms) {
-		return floorTo(ms / this.minute);
-	};
-	getHours(ms) {
-		return floorTo(ms / this.hour);
-	};
-	getDays(ms) {
-		return floorTo(ms / this.day);
-	};
-	getYears(ms) {
-		return floorTo(ms / this.year);
-	};
-  getMillisecondsInHour(ms) {
-		return (ms % this.hour);
-	};
-  getMillisecondsInMinute(ms) {
-		return (ms % this.minute);
-	};
-	getMillisecondsInDay(ms) {
-		return (ms % this.day);
-	};
-	getMillisecondsInYear(ms) {
-		return (ms % this.year);
-	};
-  getSecondsInDay(ms) {
-    return this.getSeconds(this.getMillisecondsInDay(ms));
-	};
-	getMinutesInDay(ms) {
-	  return this.getMinutes(this.getMillisecondsInDay(ms));
-	};
-	getHoursInDay(ms) {
-	  return this.getHours(this.getMillisecondsInDay(ms));
-	};
-	getDaysInYear(ms) {
-	  return this.getDays(this.getMillisecondsInYear(ms));
-	};
-  getMinutesInHour(ms) {
-		return this.getMinutes(this.getMillisecondsInHour(ms));
-	};
-  getSecondsInMinute(ms) {
-		return this.getSeconds(this.getMillisecondsInMinute(ms));
-	};
+	getSeconds = (ms) => floorTo(ms / this.second, this.accuracy);
+	getMinutes = (ms) => floorTo(ms / this.minute, this.accuracy);
+	getHours = (ms) => floorTo(ms / this.hour, this.accuracy);
+	getDays = (ms) => floorTo(ms / this.day, this.accuracy);
+	getYears = (ms) => floorTo(ms / this.year, this.accuracy);
+  getMillisecondsInMinute = (ms) => (ms % this.minute);
+  getMillisecondsInHour = (ms) => (ms % this.hour);
+	getMillisecondsInDay = (ms) => (ms % this.day);
+	getMillisecondsInYear = (ms) => (ms % this.year);
+	getHoursInDay = (ms) => this.getHours(this.getMillisecondsInDay(ms));
+	getDaysInYear = (ms) => this.getDays(this.getMillisecondsInYear(ms));
+  getMinutesInHour = (ms) => this.getMinutes(this.getMillisecondsInHour(ms));
+  getSecondsInMinute = (ms) => this.getSeconds(this.getMillisecondsInMinute(ms));
   formatSeconds = (ms) => pad(this.getSecondsInMinute(ms));
   formatMinutes = (ms) => pad(this.getMinutesInHour(ms));
   formatHours = (ms) => pad(this.getHoursInDay(ms));
