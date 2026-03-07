@@ -33,10 +33,6 @@ export const roundTo = (number, to = 1) => (Math.round(number*to)/to);
 export const ceilTo = (number, to = 1) => (Math.ceil(number*to)/to);
 export const getXPercentOfY = (x, y) => (y*(x/100));
 export const getXAsPercentOfY = (x, y) => ((x/y)*100);
-// to be removed
-export const formatMinutes = (ms) => pad(Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60)));
-export const formatSeconds = (ms) => pad(Math.floor((ms % (1000 * 60)) / 1000));
-export const formatTime = (ms) => `${formatMinutes(ms)}:${formatSeconds(ms)}`;
 
 const sortingMethods = {
 	'0-9': (prop) => (a, b) => prop(a)-prop(b),
@@ -667,10 +663,7 @@ export class Time {
 	getDaysInYear = (ms) => this.getDays(this.getMillisecondsInYear(ms));
   getMinutesInHour = (ms) => this.getMinutes(this.getMillisecondsInHour(ms));
   getSecondsInMinute = (ms) => this.getSeconds(this.getMillisecondsInMinute(ms));
-  formatSeconds = (ms) => pad(this.getSecondsInMinute(ms));
-  formatMinutes = (ms) => pad(this.getMinutesInHour(ms));
-  formatHours = (ms) => pad(this.getHoursInDay(ms));
-  format = (ms) => `${this.formatMinutes(ms)}:${this.formatSeconds(ms)}`;
+  format = (ms) => `${pad(this.getMinutesInHour(ms))}:${pad(this.getSecondsInMinute(ms))}`;
 };
 
 export class PlayingCard extends DisplayObject {
@@ -892,3 +885,4 @@ export const createOption = makeOption;
 export const createHeading = makeHeading;
 export const createRadio = makeRadio;
 export const createLabel = makeLabel;
+export const formatTime = (ms) => new Time().format(ms);
