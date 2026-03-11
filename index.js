@@ -109,6 +109,15 @@ export const makeInput = (value = 0, type = 'number') => {
   return input;
 };
 
+export const makeSlider = (value, min, max, step = 1) => {
+  const node = makeInput(0, 'range');
+  node.min = min;
+  node.max = max;
+  node.step = step;
+  node.value = value;
+  return node;
+};
+
 export const makeOutput = (rows = 7) => {
   const node = makeNode('textarea');
   node.rows = rows;
@@ -256,6 +265,22 @@ export const addDragListeners = (target, tolerance) => {
 
   });
 
+};
+
+export const append = (target) => {
+  const fn = (node) => {
+    target.appendChild(node);
+    return fn;
+  };
+  return fn;
+};
+
+export const appendTo = (target) => {
+  const fn = (node) => {
+    node.appendTo(target);
+    return fn;
+  };
+  return fn;
 };
 
 export class Storage {
