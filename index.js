@@ -109,6 +109,14 @@ export const makeInput = (value = 0, type = 'number') => {
   return input;
 };
 
+export const makeRadio = (value = 0, name = '{name}', id = '{id}', checked = false) => {
+  const node = makeInput(value, 'radio');
+  node.name = name;
+  node.id = id;
+  node.checked = checked;
+  return node;
+};
+
 export const makeSlider = (value, min, max, step = 1) => {
   const node = makeInput(0, 'range');
   node.min = min;
@@ -153,14 +161,6 @@ export const makeLink = (href = '{href}', label = '{label}', className) => {
   const node = makeNode('a', className);
   node.href = href;
   node.innerText = label;
-  return node;
-};
-
-export const makeRadio = (value = 0, name = '{name}', id = '{id}', checked = false) => {
-  const node = makeInput(value, 'radio');
-  node.name = name;
-  node.id = id;
-  node.checked = checked;
   return node;
 };
 
