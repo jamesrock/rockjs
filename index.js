@@ -892,7 +892,7 @@ export class SoundManager {
 
     if(!this.buffers[sound]) {
       console.log(`SoundManager: '${sound}' not loaded!`);
-      return;
+      return this;
     };
 
     const source = this.context.createBufferSource();
@@ -906,6 +906,8 @@ export class SoundManager {
     source.connect(gainer).connect(panner).connect(this.context.destination);
 
     source.start();
+
+    return this;
 
   };
   volume(sound, value) {
