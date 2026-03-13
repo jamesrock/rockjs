@@ -978,6 +978,44 @@ export class Tempo {
   };
 };
 
+export class Toggle extends DisplayObject {
+  constructor(items, name = '{name}', initialValue, className) {
+
+    super();
+
+    this.node = makeNode('form', className);
+    this.name = name;
+    this.initialValue = initialValue;
+    this.toggle = makeToggle(items, name, initialValue);
+
+    append(this.node)(this.toggle);
+
+  };
+  getValue() {
+
+    const data = new FormData(this.node);
+    return data.get(this.name);
+
+  };
+  getValueAsNumber() {
+
+    return Number(this.getValue());
+
+  };
+  updateItemLabel(value, label) {
+
+    this.toggle.querySelector(`label[for="${this.name}-${value}"]`).innerText = label;
+    return this;
+
+  };
+  scrollIntoView() {
+
+    this.toggle.querySelector(`input[value="${this.initialValue}"]`).scrollIntoView({block: 'center'});
+    return this;
+
+  };
+};
+
 // temporary alias
 export const createNode = makeNode;
 export const createSVGNode = makeSVGNode;
