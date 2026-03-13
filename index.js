@@ -412,6 +412,18 @@ export class DisplayObject {
 		return this;
 
 	};
+	on(event, handler, passive = true) {
+
+    this.node.addEventListener(event, handler, {passive});
+    return this;
+
+  };
+  once(event, handler, passive = true) {
+
+    this.node.addEventListener(event, handler, {passive, once: true});
+    return this;
+
+  };
 	dispatchEvent(event) {
 
 		this.node.dispatchEvent(new Event(event));
@@ -931,6 +943,37 @@ export class SoundManager {
     });
 
     return this;
+
+  };
+};
+
+export class Tempo {
+  constructor() {
+
+    this.taps = [];
+
+  };
+  tap(base = 120) {
+
+    const now = performance.now();
+    this.taps.push(now);
+
+    if(this.taps.length > 1 && now - this.taps[this.taps.length - 2] > 2000) {
+      taps = [now];
+      return base;
+    };
+
+    if(this.taps.length < 2) return base;
+    if(this.taps.length > 10) this.taps.shift();
+
+    const intervals = [];
+    for(let i = 1; i < this.taps.length; i++) {
+      intervals.push(this.taps[i] - this.taps[i - 1]);
+    };
+
+    const averageInterval = intervals.reduce((a, b) => a + b) / intervals.length;
+
+    return floorTo(60000 / averageInterval);
 
   };
 };
