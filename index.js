@@ -864,13 +864,18 @@ export class SoundManager {
     this.context = new AudioContext();
     this.sounds = sounds;
     this.buffers = {};
+    this.mixer = {};
+    this.keys = Object.keys(this.sounds);
+
+    this.listenForStateChange();
 
   };
   async load() {
 
-    return Promise.all(Object.keys(this.sounds).map((key) => this.loadBuffer(key, this.sounds[key]))).then((items) => {
+    return Promise.all(this.keys.map((key) => this.loadBuffer(key, this.sounds[key]))).then((items) => {
       items.forEach(([name, buffer]) => {
         this.buffers[name] = buffer;
+        this.mixer[name] = [0.5, 0];
       });
     });
 
@@ -891,9 +896,39 @@ export class SoundManager {
     };
 
     const source = this.context.createBufferSource();
+    const gainer = this.context.createGain();
+    const panner = this.context.createStereoPanner();
+
     source.buffer = this.buffers[sound];
-    source.connect(this.context.destination);
+    gainer.gain.value = this.mixer[sound][0];
+    panner.pan.value = this.mixer[sound][1];
+
+    source.connect(gainer).connect(panner).connect(this.context.destination);
+
     source.start();
+
+  };
+  volume(sound, value) {
+
+    this.mixer[sound][0] = value;
+    return this;
+
+  };
+  pan(sound, value) {
+
+    this.mixer[sound][1] = value;
+    return this;
+
+  };
+  listenForStateChange() {
+
+    this.context.addEventListener('statechange', async () => {
+      if(this.context.state === 'suspended') {
+        await this.context.resume();
+      };
+    });
+
+    return this;
 
   };
 };
