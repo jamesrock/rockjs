@@ -959,7 +959,7 @@ export class Tempo {
     this.taps.push(now);
 
     if(this.taps.length > 1 && now - this.taps[this.taps.length - 2] > 2000) {
-      taps = [now];
+      this.taps = [now];
       return base;
     };
 
