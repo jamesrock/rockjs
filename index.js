@@ -24,7 +24,8 @@ export const formatNumber = (n) => numberFormatter.format(n);
 export const formatCurrency = (n) => currencyFormatter.format(n);
 export const formatDate = (date, type = 'short') => date.toLocaleDateString('en-GB', { dateStyle: type });
 export const getDateString = (type = 'short') => formatDate(new Date(), type);
-export const getTimeString = (type = 'short') => new Date().toLocaleTimeString('en-GB', { timeStyle: type });
+export const formatTime = (date, type = 'short') => date.toLocaleTimeString('en-GB', { timeStyle: type });
+export const getTimeString = (type = 'short') => formatTime(new Date(), type);
 export const getDateTimeString = (type = 'short') => `${getDateString(type)} ${getTimeString(type)}`;
 export const isValidKey = (key, options) => options.includes(key);
 export const makeArray = (length, mapper = (a, i) => i) => Array.from({length}, mapper);
@@ -692,15 +693,15 @@ export class Time {
 	getHours = (ms) => floorTo(ms / this.hour, this.accuracy);
 	getDays = (ms) => floorTo(ms / this.day, this.accuracy);
 	getYears = (ms) => floorTo(ms / this.year, this.accuracy);
+  getMillisecondsInSecond = (ms) => (ms % this.second);
   getMillisecondsInMinute = (ms) => (ms % this.minute);
   getMillisecondsInHour = (ms) => (ms % this.hour);
 	getMillisecondsInDay = (ms) => (ms % this.day);
 	getMillisecondsInYear = (ms) => (ms % this.year);
+  getSecondsInMinute = (ms) => this.getSeconds(this.getMillisecondsInMinute(ms));
+  getMinutesInHour = (ms) => this.getMinutes(this.getMillisecondsInHour(ms));
 	getHoursInDay = (ms) => this.getHours(this.getMillisecondsInDay(ms));
 	getDaysInYear = (ms) => this.getDays(this.getMillisecondsInYear(ms));
-  getMinutesInHour = (ms) => this.getMinutes(this.getMillisecondsInHour(ms));
-  getSecondsInMinute = (ms) => this.getSeconds(this.getMillisecondsInMinute(ms));
-  format = (ms) => `${pad(this.getMinutesInHour(ms))}:${pad(this.getSecondsInMinute(ms))}`;
 };
 
 export class PlayingCard extends DisplayObject {
@@ -1028,4 +1029,3 @@ export const createOption = makeOption;
 export const createHeading = makeHeading;
 export const createRadio = makeRadio;
 export const createLabel = makeLabel;
-export const formatTime = (ms) => new Time().format(ms);
